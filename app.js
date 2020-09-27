@@ -6,6 +6,9 @@ const app = express()
 // порт забираем из config
 const PORT = config.get('port') || 5000
 
+//что бы json формать бил
+app.use(express.json({extended: true}))
+
 // это  адрес запоса /api/auth/ 
 app.use('/api/auth', require('./routes/auth.routes'))
 
