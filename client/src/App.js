@@ -1,20 +1,19 @@
 import React from 'react'
-import {useRoutes} from './routes'
-import {BrowserRouter } from 'react-router-dom'
-
-
+import {BrowserRouter as Router} from 'react-router-dom'
+import 'materialize-css'
+import { useRoutes } from './Pages/routes'
 
 
 function App (){
-  // тут подкулчаем наш раутер которие созали самый 
   const routes = useRoutes(false)
     return (
-      <BrowserRouter>
-      <div className="container">
-      {routes}
-      </div>
-      </BrowserRouter>
+      <Router>
+        <div className="container">
+     {routes}
+        </div>
+            </Router>
     )
 }
+
 
 export default App

@@ -1,0 +1,79 @@
+
+    try{
+        console.log(req.body)
+    const {email, password} = req.body
+    const user = new User({ email, password})
+  
+    await user.save()
+   
+    res.status(200).json({message: 'Hello tum'})  
+     
+    }catch(e){
+        console.log(e)
+    }
+  })
+
+  app.post('/login', (req, res)=>{
+    console.log(req.body)
+    res.status(200).json({ message: 'Что-то пошло не так, попробуйте снова' })
+})
+
+
+app.post('/login', (req, res)=>{
+   
+    console.log(req.body)
+    res.status(200).json({ message: 'Что-то пошло не так, попробуйте снова' })
+})
+
+
+
+// сервер
+const cors = require('cors')
+const express = require('express')
+const morgan = require('morgan') 
+const bodyParser = require('body-parser')
+const config = require('config')
+const mongoose = require('mongoose')
+const PORT = process.env.PORT || config.get('port') || 5000
+const app = express()
+const routAuth = require('./routes/auth.routers')
+const User = require('./modeles/User')
+app.use('api/auth', routAuth)
+app.use(express.json({extended: true}))
+
+// подкулчения mongoDb
+     async function start(){
+     try{
+        await mongoose.connect(config.get('mongoUrl'),{
+            useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+        })
+        console.log('Mongo conected')
+     }catch(e){
+         console.log('Server Error', e.message)
+         // если что то полшо не так то завершим процес 
+         process.exit(1)
+     }
+     }
+ 
+     
+// cors что бы можно била от всюда взвать сервер
+app.use(cors())
+
+//body-parser
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
+
+//morgan что бы увидеть просес запроса в коннсол
+app.use(morgan('dev'))
+      
+
+start()
+
+
+
+
+
+
+app.listen(PORT, ()=>console.log(`App has been  strted on ${PORT}...`))

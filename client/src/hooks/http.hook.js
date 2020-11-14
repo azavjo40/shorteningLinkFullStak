@@ -1,59 +1,40 @@
+// my hooks http fetch запрос к сервер
+import { useState, useCallback} from "react"
 
-import {useState, useCallback} from 'react'
 
 
-// собстный hook наш 
-export const useHttp = () => {
-     // loading 
-  const [loading, setLoading] = useState(false)
-   // error
-  const [error, setError] = useState(null)
+export const useHttp = ()=>{
+    // fn loading это что бы указать flse true для авторизация пользвателья 
+    const {loading, setloading} = useState(false)
+    // fn error пустой 
+    const {error, setError} = useState(null)
+    // fn запрось к сервер
+const request = useCallback( async (url, method = 'GET', body = null, headers = {} ) =>{
+// запускаем авторизация
+setloading(true)
+    try{
+    // запрос в сервер 
+const response = await fetch(url,{method, body, headers})
+const data = await response.json()
 
-    // функция для запрос на сервер параметри укажем потом 
-  const request = useCallback(async (url, method = 'GET', body = null, headers = {}) => {
-       // тут будить запрос на сервер
+//если не ок то ошибка
+if(!response.ok){
+    throw new Error(data.message ||' Что-то Пошло не так ')
+}
+// тут закнчваем 
+setloading(false)
 
-     // чтобы загрузился
-    setLoading(true)
-    try {
-
-     //если есть бодий то отправлаем json
-      if (body) {
-        body = JSON.stringify(body)
-        headers['Content-Type'] = 'application/json'
-      }
-
-      const response = await fetch(url, {method, body, headers})
-       // сделали формать json
-      const data = await response.json()
-
-       // если в поль не все ок то 
-      if (!response.ok) {
-        throw new Error(data.message || 'Что-то пошло не так')
-      }
-
-       //заканчиваем загруску 
-      setLoading(false)
-
-      return data
-    } catch (e) {
-           //заканчиваем загруску 
-      setLoading(false)
-
-      // если ошибка то отправлаем и выкидваем
-      setError(e.message)
-      throw e
-    }
-
-      // тут будить зависимость напримерь если внутри будить функция
-  }, [])
-
-  // функция очиска error
-  const clearError = useCallback(() => setError(null), [])
-
-  // возрашаем их 
-  return { loading, request, error, clearError }
+// иначе все хорошо  вернем data с сервера  
+return data
+}catch(e){
+    setloading(false)
+    setError(e.message)
+    throw e
 }
 
-
-
+}, [])
+// очиска error
+const clearError = ()=> setError(null)
+// возрашаем fn 
+return { loading, request, error, clearError}
+}

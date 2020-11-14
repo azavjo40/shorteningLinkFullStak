@@ -1,90 +1,78 @@
-import React, {useState} from 'react'
-//import  {Button} from 'react-bootstrap';
-import { useHttp } from '../hooks/http.hook';
+import React, {useState}  from 'react'
+import { useHttp } from '../hooks/http.hook'
 
 
 function AuthPage (){
-
-  // импортируем наш hoos 
-  const {loading, request} = useHttp()
-
-  // работа с формам забераем всю форм для отправка 
-  const [form, setForm] = useState({
+// import my hooks 
+  const {loading, request  } = useHttp()
+  const {form, setForm} = useState({
     email: '', password: ''
   })
+// фн для сбора поля 
+const changeHandler = event =>{
+  setForm({...form, [event.target.name]: event.target.value })
+}
+   
+// fn register
+const registerHandler = async () =>{
+try{
+const data = await request('/api/auth/register','POST', {...form})
+console.log('data',data)
+}catch(e){}
+}
 
-  // фунция обмен инпуть
-  const changeHandler = event => {
-    setForm({ ...form, [event.target.name]: event.target.value })
-  }
-
-
-  // функция запрос на сервер с помоши хуук
-     const registerHandler = async ()=>{
-
-      try{ 
-        // тут передаем параметр фунция api адрес 
-       const data = await request('http://localhost:5000/api/auth/register','POST',{...form})
-       console.log('data',data)
-      }catch(e){ console.log('error', e.message) }
-
-     }
-    return (
-      <div className="formCon">
-     <div >
-        <h1>Сократи Ссылку</h1>
-        <div >
+ return(
+   <div className="row">
+   <div className="col s6 offset-s3">
+    <h1 style={{fontSize: 30}}>Сократи-Ссылку</h1>
+    <div className="card blue darken-1">
+        <div className="card-content white-text">
+          <span className="card-title">Авторизация</span>
           <div>
-            <span>Авторизация</span>
-            <div>
+        
+        <div className="input-field ">
+          <input placeholder="Введите Email" 
+          id="emil"
+           type="email"
+           name="email" 
+           className="yellow-input"
+           onChange={changeHandler}
+          />
+          <label htlmfor="email">Email</label>
+        </div>
 
-              <div >
-                <input
-                  placeholder="Введите email"
-                  id="email"
-                  type="text"
-                  name="email"
-                  className="yellow-input"
-                  value={form.email}
-                  onChange={changeHandler}
-                />
-                <label htmlFor="email">Email</label>
-              </div>
+        <div className="input-field ">
+          <input placeholder="Введите Пароль" 
+          id="password"
+           type="password"  
+           name="password"
+           className="yellow-input"
+           onChange={changeHandler}
+          />
+          <label   htlmfor="password">Пароль</label>
+        </div>
 
-              <div className="input-field">
-                <input
-                  placeholder="Введите пароль"
-                  id="password"
-                  type="password"
-                  name="password"
-                  className="yellow-input"
-                  value={form.password}
-                  onChange={changeHandler}
-                />
-                <label htmlFor="email">Пароль</label>
-              </div>
-
-            </div>
-          </div>
-          <div >
-          <button
-              style={{marginRight: 10}}
-              disabled={loading}
-             
-            >
-              Войти
-            </button>
-
-            <button
-              onClick={registerHandler}
-              disabled={loading}
-            >
-              Регистрация
-            </button>
           </div>
         </div>
+        <div className="card-action">
+         <button className="btn yellow darken-4" 
+         style={{marginRight: 10}}
+          // что бы заблокирват бтн или разблок
+          disabled={loading}
+         >
+           Войти
+           </button>
+         <button className="btn grey lithen-1 black-text"
+         onClick={registerHandler}
+         // что бы заблокирват бтн или разблок
+         disabled={loading}
+         >
+           Регистрация
+           </button>
+        </div>
       </div>
-</div>
-    )
+   </div>
+   </div>
+ )
 }
 export default AuthPage

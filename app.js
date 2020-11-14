@@ -1,39 +1,44 @@
+// сервер
+const cors = require('cors')
 const express = require('express')
+const morgan = require('morgan') 
+const bodyParser = require('body-parser')
 const config = require('config')
 const mongoose = require('mongoose')
+const PORT = process.env.PORT || config.get('port') || 5000
 const app = express()
+const routAuth = require('./routes/auth.routers')
+app.use('/api/auth',routAuth)
 
-// порт забираем из config
-const PORT = config.get('port') || 5000
+// cors что бы можно била от всюда взвать сервер
+app.use(cors())
 
-//что бы json формать бил
-app.use(express.json({extended: true}))
+//body-parser
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
 
-// это  адрес запоса /api/auth/ 
-app.use('/api/auth', require('./routes/auth.routes'))
+//morgan что бы увидеть просес запроса в коннсол
+app.use(morgan('dev'))
 
-// тут подкулчаем базаданих
-async function start() {
-    try {
-        // адрес база даний 
-      await mongoose.connect(config.get('mongoUrl'), {
-        useNewUrlParser: true,
+// подкулчения mongoDb
+     async function start(){
+     try{
+        await mongoose.connect(config.get('mongoUrl'),{
+            useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true
-      })
-      // на это порту слушает 
-      app.listen(PORT, () => console.log(`App has been started on port ${PORT}...`))
-    } catch (e) {
-        // если ошибка 
-      console.log('Server Error', e.message)
-      // иначе выходим 
-      process.exit(1)
-    }
-  }
-  
-  start()
-  
-  
+        })
+        console.log('Mongo conected')
+     }catch(e){
+         console.log('Server Error', e.message)
+         // если что то полшо не так то завершим процес 
+         process.exit(1)
+     }
+     }
+ 
+start()
 
 
 
+
+app.listen(PORT, ()=>console.log(`App has been  strted on ${PORT}...`))
