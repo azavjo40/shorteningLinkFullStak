@@ -1,10 +1,11 @@
 // my hooks http fetch запрос к сервер
 import { useState, useCallback} from "react"
-
+import fetch from 'isomorphic-unfetch'
 
 
 export const useHttp = ()=>{
     // fn loading это что бы указать flse true для авторизация пользвателья 
+  
     const {loading, setloading} = useState(false)
     // fn error пустой 
     const {error, setError} = useState(null)
@@ -32,9 +33,9 @@ return data
     throw e
 }
 
-}, [])
+},[setError,setloading ])
 // очиска error
-const clearError = ()=> setError(null)
+const  clearError = ()=> setError(null)
 // возрашаем fn 
 return { loading, request, error, clearError}
 }

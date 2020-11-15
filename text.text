@@ -77,3 +77,135 @@ start()
 
 
 app.listen(PORT, ()=>console.log(`App has been  strted on ${PORT}...`))
+
+
+import React, {useState}  from 'react'
+import { useHttp } from '../hooks/http.hook'
+
+
+function AuthPage (){
+// import my hooks 
+  const {loading, request  } = useHttp()
+  const [form, setForm] = useState({
+    email: '', password: ''
+  })
+  
+ 
+// фн для сбора поля 
+const changeHandler = event =>{
+  setForm({...form, [event.target.name]: event.target.value })
+}
+// fn register
+const registerHandler = async () =>{
+
+try{
+const data = await request('http://localhost:5000/api/auth/register','POST', {...form})
+  console.log('data',data)
+  console.log('hello')
+}catch(e){}
+}
+
+ return(
+   <div className="row">
+   <div className="col s6 offset-s3">
+    <h1 style={{fontSize: 30}}>Сократи-Ссылку</h1>
+    <div className="card blue darken-1">
+        <div className="card-content white-text">
+          <span className="card-title">Авторизация</span>
+          <div>
+        
+        <div className="input-field ">
+          <input placeholder="Введите Email" 
+          id="emil"
+           type="email"
+           name="email" 
+           className="yellow-input"
+           onChange={changeHandler}
+          />
+          <label htlmfor="email">Email</label>
+        </div>
+
+        <div className="input-field ">
+        <input placeholder="Введите Пароль" 
+             id="password"
+             type="password"  
+           name="password"
+           className="yellow-input"
+           onChange={changeHandler}
+          />
+          <label   htlmfor="password">Пароль</label>
+        </div>
+         
+          </div>
+        </div>
+        <div className="card-action">
+
+        <button className="btn yellow darken-4" 
+         style={{marginRight: 10}}
+          // что бы заблокирват бтн или разблок
+          disabled={loading}
+
+         >
+           Войти
+           </button>
+
+         <button className="btn grey lithen-1 black-text"
+         // что бы заблокирват бтн или разблок
+           disabled={loading}
+            onClick={registerHandler}
+            onClick={()=>{console.log('hello')}}
+         >
+           Регистрация
+           </button> 
+          
+        </div>
+      </div>
+   </div>
+   </div>
+ )
+}
+export default AuthPage
+
+
+
+// my hooks http fetch запрос к сервер
+import { useState, useCallback} from "react"
+import fetch from 'isomorphic-unfetch'
+
+
+export const useHttp = ()=>{
+    // fn loading это что бы указать flse true для авторизация пользвателья 
+    
+    const {loading, setloading} = useState(false)
+    // fn error пустой 
+    const {error, setError} = useState(null)
+    // fn запрось к сервер
+const request = useCallback( async (url, method = 'GET', body = null, headers = {} ) =>{
+// запускаем авторизация
+setloading(true)
+    try{
+    // запрос в сервер 
+const response = await fetch(url,{method, body, headers})
+const data = await response.json()
+
+//если не ок то ошибка
+if(!response.ok){
+    throw new Error(data.message ||' Что-то Пошло не так ')
+}
+// тут закнчваем 
+setloading(false)
+
+// иначе все хорошо  вернем data с сервера  
+return data
+}catch(e){
+    setloading(false)
+    setError(e.message)
+    throw e
+}
+
+},[setError,setloading ])
+// очиска error
+const  clearError = ()=> setError(null)
+// возрашаем fn 
+return { loading, request, error, clearError}
+}

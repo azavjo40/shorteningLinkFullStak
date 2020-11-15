@@ -16,6 +16,7 @@ router.post(
     .isLength({min: 6})
   ],
   async (req, res) => {
+    console.log('body', req.body)
   try {
 // валидатор 
     const errors = validationResult(req)
