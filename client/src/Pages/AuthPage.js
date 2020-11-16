@@ -1,14 +1,21 @@
-import React, {useState}  from 'react'
+import React, {useEffect, useState}  from 'react'
 import { useHttp } from '../hooks/http.hook'
+import { useMesaage } from '../hooks/message.hook'
 
 
 function AuthPage (){
 // import my hooks 
-  const {loading, request  } = useHttp()
+const message = useMesaage()
+  const { request, loading, error, clearError} = useHttp()
   const [form, setForm] = useState({
     email: '', password: ''
   })
   
+  //  следить за ошибка и отправляем пз
+  useEffect(()=>{
+  message(error)
+  clearError()
+  },[error,message])
  
 // фн для сбора поля 
 const changeHandler = event =>{
@@ -16,12 +23,13 @@ const changeHandler = event =>{
 }
 // fn register
 const registerHandler = async () =>{
-
 try{
-const data = await request('http://localhost:5000/api/auth/register','POST', {...form})
-  console.log('data',data)
-  console.log('hello')
-}catch(e){}
+const data = await request('/api/auth/register','POST', {...form})
+  console.log('Data',data)
+ 
+}
+
+catch(e){console.log(e)}
 }
 
  return(
@@ -62,7 +70,7 @@ const data = await request('http://localhost:5000/api/auth/register','POST', {..
         <button className="btn yellow darken-4" 
          style={{marginRight: 10}}
           // что бы заблокирват бтн или разблок
-          disabled={loading}
+         disabled={loading}
 
          >
            Войти

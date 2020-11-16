@@ -1,44 +1,39 @@
-// сервер
-const cors = require('cors')
 const express = require('express')
-const morgan = require('morgan') 
-const bodyParser = require('body-parser')
 const config = require('config')
+const path = require('path')
 const mongoose = require('mongoose')
-const PORT = process.env.PORT || config.get('port') || 5000
+
 const app = express()
-const routAuth = require('./routes/auth.routers')
-app.use('/api/auth',routAuth)
 
-// cors что бы можно била от всюда взвать сервер
-app.use(cors())
+app.use(express.json({ extended: true }))
 
-//body-parser
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(bodyParser.json())
+app.use('/api/auth', require('./routes/auth.routes'))
+//app.use('/api/link', require('./routes/link.routes'))
+//app.use('/t', require('./routes/redirect.routes'))
 
-//morgan что бы увидеть просес запроса в коннсол
-app.use(morgan('dev'))
+//if (process.env.NODE_ENV === 'production') {
+  //app.use('/', express.static(path.join(__dirname, 'client', 'build')))
 
-// подкулчения mongoDb
-     async function start(){
-     try{
-        await mongoose.connect(config.get('mongoUrl'),{
-            useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true
-        })
-        console.log('Mongo conected')
-     }catch(e){
-         console.log('Server Error', e.message)
-         // если что то полшо не так то завершим процес 
-         process.exit(1)
-     }
-     }
- 
+  //app.get('*', (req, res) => {
+    //res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+ // })
+//}
+
+const PORT = config.get('port') || 5000
+
+async function start() {
+  try {
+    await mongoose.connect(config.get('mongoUri'), {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true
+    })
+    app.listen(PORT, () => console.log(`App has been started on port ${PORT}...`))
+  } catch (e) {
+    console.log('Server Error', e.message)
+    process.exit(1)
+  }
+}
+
 start()
 
-
-
-
-app.listen(PORT, ()=>console.log(`App has been  strted on ${PORT}...`))

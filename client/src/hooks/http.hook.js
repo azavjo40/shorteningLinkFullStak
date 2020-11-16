@@ -1,41 +1,36 @@
 // my hooks http fetch запрос к сервер
-import { useState, useCallback} from "react"
-import fetch from 'isomorphic-unfetch'
+import {useState, useCallback} from 'react'
 
+export const useHttp = () => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-export const useHttp = ()=>{
-    // fn loading это что бы указать flse true для авторизация пользвателья 
-  
-    const {loading, setloading} = useState(false)
-    // fn error пустой 
-    const {error, setError} = useState(null)
-    // fn запрось к сервер
-const request = useCallback( async (url, method = 'GET', body = null, headers = {} ) =>{
-// запускаем авторизация
-setloading(true)
-    try{
-    // запрос в сервер 
-const response = await fetch(url,{method, body, headers})
-const data = await response.json()
+  const request = useCallback(async (url, method = 'GET', body = null, headers = {}) => {
+    setLoading(true)
+    try {
+      if (body) {
+        body = JSON.stringify(body)
+        headers['Content-Type'] = 'application/json'
+      }
 
-//если не ок то ошибка
-if(!response.ok){
-    throw new Error(data.message ||' Что-то Пошло не так ')
-}
-// тут закнчваем 
-setloading(false)
+      const response = await fetch(url, {method, body, headers})
+      const data = await response.json()
 
-// иначе все хорошо  вернем data с сервера  
-return data
-}catch(e){
-    setloading(false)
-    setError(e.message)
-    throw e
-}
+      if (!response.ok) {
+        throw new Error(data.message || 'Что-то пошло не так')
+      }
 
-},[setError,setloading ])
-// очиска error
-const  clearError = ()=> setError(null)
-// возрашаем fn 
-return { loading, request, error, clearError}
+      setLoading(false)
+
+      return data
+    } catch (e) {
+      setLoading(false)
+      setError(e.message)
+      throw e
+    }
+  }, [])
+
+  const clearError = useCallback(() => setError(null), [])
+
+  return { loading, request, error, clearError }
 }
