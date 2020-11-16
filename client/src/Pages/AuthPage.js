@@ -46,7 +46,7 @@ const loginHandler = async () =>{
  return(
    <div className="row">
    <div className="col s6 offset-s3">
-    <h1 style={{fontSize: 30}}>Сократи-Ссылку</h1>
+    <h1 style={{fontSize: 30}}>Регистрация || Войти</h1>
     <div className="card blue darken-1">
         <div className="card-content white-text">
           <span className="card-title">Авторизация</span>
