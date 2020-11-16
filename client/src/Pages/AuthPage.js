@@ -1,9 +1,11 @@
-import React, {useEffect, useState}  from 'react'
+import React, {useContext, useEffect, useState}  from 'react'
 import { useHttp } from '../hooks/http.hook'
 import { useMesaage } from '../hooks/message.hook'
-
+import {AuthContext} from '../context/AuthContext'
 
 function AuthPage (){
+  //передаем Authcontext в useContext
+const auth = useContext(AuthContext)
 // import my hooks 
 const message = useMesaage()
   const { request, loading, error, clearError} = useHttp()
@@ -15,7 +17,7 @@ const message = useMesaage()
   useEffect(()=>{
   message(error)
   clearError()
-  },[error,message])
+  },[error,message, clearError])
  
 // фн для сбора поля 
 const changeHandler = event =>{
@@ -25,12 +27,21 @@ const changeHandler = event =>{
 const registerHandler = async () =>{
 try{
 const data = await request('/api/auth/register','POST', {...form})
-  console.log('Data',data)
+  message(data.message)
  
+}catch(e){}
 }
 
-catch(e){console.log(e)}
-}
+// fn login
+const loginHandler = async () =>{
+  try{
+  const data = await request('/api/auth/login','POST', {...form})
+    //message(data.message)
+   // передаем значения token userId
+    auth.login(data.token, data.userId)
+   
+  }catch(e){}
+  }
 
  return(
    <div className="row">
@@ -71,7 +82,7 @@ catch(e){console.log(e)}
          style={{marginRight: 10}}
           // что бы заблокирват бтн или разблок
          disabled={loading}
-
+         onClick={loginHandler}
          >
            Войти
            </button>

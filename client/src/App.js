@@ -2,17 +2,31 @@ import React from 'react'
 import {BrowserRouter as Router} from 'react-router-dom'
 import 'materialize-css'
 import { useRoutes } from './Pages/routes'
+import { useAuth } from './hooks/auth.hook'
+import { AuthContext } from './context/AuthContext'
+import {Navbar} from './components/Navbar'
 
 
 function App (){
-  const routes = useRoutes(false)
+  // експорт мой хук для авторизация локол стороч
+  const {token, login, logout, userId} = useAuth()
+  // провепить true false зависить от токен передаем в rout
+  const isAuthenticated  = !!token
+  const routes = useRoutes(isAuthenticated)
     return (
-      <Router>
-        <div className="container">
+      <AuthContext.Provider value={{
+        // передаем все хук авторизация 
+        token, login, logout, userId, isAuthenticated
+      }}>
+        <Router>
+      {isAuthenticated && <Navbar />}
+      <div className="container">
      {routes}
-        </div>
-            </Router>
+      </div>
+      </Router>
+      </AuthContext.Provider>
     )
+  
 }
 
 
