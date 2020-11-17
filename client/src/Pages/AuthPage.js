@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState}  from 'react'
+import React, { useContext, useEffect, useState }   from 'react'
 import { useHttp } from '../hooks/http.hook'
 import { useMesaage } from '../hooks/message.hook'
 import {AuthContext} from '../context/AuthContext'
@@ -18,6 +18,11 @@ const message = useMesaage()
   message(error)
   clearError()
   },[error,message, clearError])
+
+// что бы убрать с импута ошибку 
+  useEffect(() => {
+    window.M.updateTextFields()
+  }, [])
  
 // фн для сбора поля 
 const changeHandler = event =>{
@@ -37,7 +42,7 @@ const loginHandler = async () =>{
   try{
   const data = await request('/api/auth/login','POST', {...form})
     //message(data.message)
-   // передаем значения token userId
+   // передаем значения token userId  до context
     auth.login(data.token, data.userId)
    
   }catch(e){}

@@ -4,11 +4,13 @@ import {AuthContext} from '../context/AuthContext'
 
 export const Navbar = () => {
   const history = useHistory()
+  // auth для выйти с сайта очистить 
   const auth = useContext(AuthContext)
-
+// фн для очиски локолстороч что бы выйти 
   const logoutHandler = event => {
     event.preventDefault()
     auth.logout()
+    // для очиска хистория бравзер 
     history.push('/')
   }
 

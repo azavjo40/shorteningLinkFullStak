@@ -12,6 +12,7 @@ function App (){
   const {token, login, logout, userId} = useAuth()
   // провепить true false зависить от токен передаем в rout
   const isAuthenticated  = !!token
+  // передаем  isAuthenticated зависить от токен если правда то router будеть работать 
   const routes = useRoutes(isAuthenticated)
     return (
       <AuthContext.Provider value={{
