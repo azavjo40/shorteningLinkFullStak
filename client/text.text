@@ -212,3 +212,84 @@ return { loading, request, error, clearError}
 
 
 
+router.post('/generate',auth, async (req, res)=>{
+    try{
+        // тут храним адресь локол хост
+  const baseUrl = config.get('baseUrl')
+
+   // получаем from откуда получем сылку 
+   const {from} = req.body
+console.log(req.body)
+   // сформировать каротки код придумать уникалний пут с библотеки shortid
+ const code = shortid.generate()
+
+ // проверяем если такой сылка в базе то отправляем это сылку
+  const existing   = await Link.findOne({from})
+ if(existing){
+    return res.status(200).json({link: existing})
+ }
+
+ // to сформировать хост и коде  и отправить 
+     const to = baseUrl + '/t' + code
+
+     //создаем сылка 
+     const link = new Link({
+         code, to, from, owner: req.user.userId
+     })
+
+     // сохрянаем
+     await link.save()
+
+     res.status(201).json({link})
+    }catch(e){
+        res.status(500).json({message: 'Что-то пошло не так попробуйте снова'})
+}
+})
+
+
+// фн перехватить логику для линк next для продолжения запросы
+const jwt = require('jsonwebtoken')
+const { config } = require('process')
+
+module.exports = (req, res, next) => {
+    //проверяем если сервер то продолбжаем запросы 
+if(req.method === 'OPTIONS') {
+return next()
+}
+try{
+    // получаем токен с хидер строка которие будем отправлять с фронтента забиряем первий элемент
+const token = req.headers.authorization.split('')[1] // Bearer TOKEN
+// если нет токен
+if(!token){
+    // отвечаем нет авторизация
+ return res.status(401).json({message: 'Нет авторизация'})
+ }
+ // если есть токен то разпарсим их
+ const decoded = jwt.verify(token,config.get('jwtSecre')) 
+// положим его 
+req.user = decoded
+next()
+}catch(e){
+    res.status(401).json({message: 'Нет авторизация'})
+}
+
+}
+
+
+ histiry.push(`/detail/${data.link._id}`)
+
+
+ // fn для нажати enter
+const pressHandler = async event => {
+  if (event.key === 'Enter') {
+    try {
+      // запросы к сервера
+      const data = await request('/api/link/generate', 'POST', {from: link}, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      console.log(data)
+     // когда сделали сылку обрашаемся к хисори делаем редирек к айди делайл
+    
+    } catch (e) {}
+  }
+}

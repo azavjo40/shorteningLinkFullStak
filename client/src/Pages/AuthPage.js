@@ -19,7 +19,7 @@ const message = useMesaage()
   clearError()
   },[error,message, clearError])
 
-// что бы убрать с импута ошибку 
+// что бы убрать с импута ошибку обновить инпут 
   useEffect(() => {
     window.M.updateTextFields()
   }, [])
@@ -64,6 +64,7 @@ const loginHandler = async () =>{
            name="email" 
            className="yellow-input"
            onChange={changeHandler}
+           value={form.email}
           />
           <label htlmfor="email">Email</label>
         </div>
@@ -75,6 +76,7 @@ const loginHandler = async () =>{
            name="password" 
            className="yellow-input"
            onChange={changeHandler}
+           value={form.password}
           />
           <label   htlmfor="password">Пароль</label>
         </div>
