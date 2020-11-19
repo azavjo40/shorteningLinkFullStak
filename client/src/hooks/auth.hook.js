@@ -5,6 +5,10 @@ const stotageName = 'userData'
 export const useAuth = () => {
     // token 
 const [token, setToken] = useState(null)
+
+// для того что бы обновлять token ready
+const [ready, setReady] = useState(false)
+
 //userID
 const [userId, setUserId] = useState(null)
 // фн для войти 
@@ -33,8 +37,9 @@ useEffect(()=>{
     if(data && data.token){
      login(data.token, data.userId)
     }
+    setReady(true)
 },[login])
 // експорт 
-return {login, logout, token, userId}
+return {login, logout, token, userId,ready}
 
 }

@@ -293,3 +293,43 @@ const pressHandler = async event => {
     } catch (e) {}
   }
 }
+
+
+
+function LinksPage (){
+
+// тут будить наш общей все ссылки
+const [links, setLinks] = useState()
+// hooks http
+ const {request, loading} = useHttp()
+ //авторизация
+ const {token} = useContext(AuthContext)
+
+ // фн для загрузка 
+ const fechLinks = useCallback( async ()=>{
+  try{
+    // запрос к база
+  const feched = await request('/api/link', 'GET', null, {
+    Authorization: `Bearer ${token}`
+  })
+  // передаем в сетликс
+  setLinks(feched)
+  }catch(e){}
+ },[token, request])
+
+ // вызваем функцию
+ useEffect(()=>{
+  fechLinks()
+ },[])
+
+ // если 
+ if(loading){
+   return <Loader />
+ }
+    return (
+      <>
+     {!loading && <LinksList links={links} />}
+      </>
+    )
+}
+export default LinksPage

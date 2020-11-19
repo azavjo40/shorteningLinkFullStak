@@ -7,6 +7,9 @@ const auth = require('../middleware/auth.middleware')
 const config = require('config')
 const shortid = require('shortid')
 
+
+
+
 // /api/link/generste  создать добавить мидолвер
 
 router.post('/generate',auth, async (req, res) => {
@@ -42,16 +45,18 @@ router.post('/generate',auth, async (req, res) => {
 
 
 
+
+
 // все запрось тут добавляем мидлвер
-router.get('/',auth, async (req, res)=>{
-    try{
-        // забераем все сылки 
-   const links = await Link.find({owner: req.user.userId}) // тут то что создали в мидолверы
-   // возрашаем все сылки
-   res.json(links)
-    }catch(e){
-        res.status(500).json({message: 'Что-то пошло не такб попробуйте снова'})
-    }
+router.get('/', auth, async (req, res) => {
+  try {
+      // забераем все сылки 
+    const links = await Link.find({ owner: req.user.userId })
+       // возрашаем все сылки
+    res.json(links)
+  } catch (e) {
+    res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+  }
 })
 
 
@@ -59,18 +64,16 @@ router.get('/',auth, async (req, res)=>{
 
 
 // по id  добавляем мидолвер
-router.get('/:id',auth, async (req, res)=>{
-    try{
-      // забераем сылки по  id
-      const links = await Link.findById(req.params.id) 
-      // возрашаем  сылки
-      res.json(links)
-    }catch(e){
-        res.status(500).json({message: 'Что-то пошло не такб попробуйте снова'})
-    }
+router.get('/:id', auth, async (req, res) => {
+  try { 
+    // забераем сылки по  id
+    const link = await Link.findById(req.params.id)
+    // возрашаем  сылки
+    res.json(link)
+  } catch (e) {
+    res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+  }
 })
-
-
 
 
 module.exports = router

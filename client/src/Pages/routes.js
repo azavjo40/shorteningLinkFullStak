@@ -1,9 +1,10 @@
 import React from 'react'
 import {Switch, Route,  Redirect} from 'react-router-dom'
-import LinksPage from './LinksPage'
+
 import CreatePage from './CteatePage'
 import DetailPage from './DetailPage'
 import AuthPage from './AuthPage'
+import { LinksPage } from './LinksPage'
 // roters 
 export const  useRoutes = isAuthenticated =>{
     if(isAuthenticated){
