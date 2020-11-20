@@ -32,8 +32,9 @@ export const LinksPage = () => {
   }
 
   return (
-    <>
+    <div className="center">
       {!loading && <LinksList links={links} />}
-    </>
+    
+    </div>
   )
 }

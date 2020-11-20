@@ -40,10 +40,11 @@ try{
 
      return (
        // если loading false и link то возрашаем linkCard передаем в пропс link
-      <>
+      <div className="container">
       
-        { !loading && link && <LinkCard link={link} /> }
-      </>
+        { !loading && link && <LinkCard link={link} /> } 
+       
+      </div>
     )
 }
 export default DetailPage

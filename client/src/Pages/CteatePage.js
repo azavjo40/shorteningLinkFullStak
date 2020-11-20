@@ -20,6 +20,19 @@ useEffect(() => {
   window.M.updateTextFields()
 }, [])
 
+// onClickHandler
+
+const clickHandler = async event => {
+    try {
+      const data = await request('/api/link/generate', 'POST', {from: link}, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      // когда сделали сылку обрашаемся к хисори делаем редирек к айди делайл
+      history.push(`/detail/${data.link._id}`)
+    } catch (e) {}
+  
+}
+
 // fn для нажати enter
 const pressHandler = async event => {
   if (event.key === 'Enter') {
@@ -47,6 +60,11 @@ const pressHandler = async event => {
           <label htlmfor="link">Введите ссылку</label>
           
         </div>
+        <button
+        onClick={clickHandler}
+         className="btn waves-effect waves-light" type="submit" name="action">Create
+    <i className="material-icons right">send</i>
+  </button>
    </div>
       </div>
     )

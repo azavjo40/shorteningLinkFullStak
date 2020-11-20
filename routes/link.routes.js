@@ -18,11 +18,11 @@ router.post('/generate',auth, async (req, res) => {
       const baseUrl = config.get('baseUrl')
        // получаем from откуда получем сылку 
       const {from} = req.body
-
+    
        // сформировать каротки код придумать уникалний пут с библотеки shortid
       const code = shortid.generate()
-  // проверяем если такой сылка в базе то отправляем это сылку
-      const existing = await Link.findOne({ from })
+  // проверяем если такой сылка в базе то отправляем это сылку с userId
+      const existing = await Link.findOne({ from, owner: req.user.userId })
       if (existing) {
         return res.json({ link: existing })
       }
